@@ -1,5 +1,6 @@
 package com.zakrzewski.reservationsystem.mapper;
 
+import com.zakrzewski.reservationsystem.dto.request.EmployeeCreateAccountRequest;
 import com.zakrzewski.reservationsystem.dto.response.EmployeeResponse;
 import com.zakrzewski.reservationsystem.model.EmployeeEntity;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,15 @@ public class EmployeeMapper {
                 .withLastName(employeeEntity.getLastName())
                 .withEmail(employeeEntity.getEmail())
                 .withTeam(employeeEntity.getTeam())
+                .build();
+    }
+
+    public EmployeeEntity mapEmployeeCreateAccountRequestToEmployeeEntity(final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
+        return EmployeeEntity.builder()
+                .withTeam(employeeCreateAccountRequest.getTeam())
+                .withEmail(employeeCreateAccountRequest.getEmail())
+                .withLastName(employeeCreateAccountRequest.getLastName())
+                .withFirstName(employeeCreateAccountRequest.getFirstName())
                 .build();
     }
 }
