@@ -1,56 +1,46 @@
 package com.zakrzewski.reservationsystem.controller;
 
 import com.zakrzewski.reservationsystem.dto.response.CacheEntryResponse;
+import com.zakrzewski.reservationsystem.service.cache.CacheDiatnosticsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cache")
 public class CacheDiagnosticsController {
 
-    private final CacheManager cacheManager;
+    private final CacheDiatnosticsService cacheDiatnosticsService;
+
+    @SuppressWarnings("unused")
+    public CacheDiagnosticsController() {
+        this(null);
+    }
 
     @Autowired
-    public CacheDiagnosticsController(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    public CacheDiagnosticsController(final CacheDiatnosticsService cacheDiatnosticsService) {
+        this.cacheDiatnosticsService = cacheDiatnosticsService;
     }
 
     @GetMapping("/content")
-    public Map<String, List<CacheEntryResponse>> getAllCacheContent() {
-        Map<String, List<CacheEntryResponse>> cacheContent = new HashMap<>();
-        for (String cacheName : cacheManager.getCacheNames()) {
-            Cache cache = cacheManager.getCache(cacheName);
-            if (cache instanceof CaffeineCache caffeineCache) {
-                com.github.benmanes.caffeine.cache.Cache<Object, Object> nativeCache = caffeineCache.getNativeCache();
-                List<CacheEntryResponse> entries = nativeCache.asMap().entrySet().stream()
-                        .map(entry -> new CacheEntryResponse(entry.getKey(), entry.getValue()))
-                        .collect(Collectors.toList());
-
-                cacheContent.put(cacheName, entries);
-            }
-        }
-        return cacheContent;
+    public ResponseEntity<Map<String, List<CacheEntryResponse>>> getAllCacheContent() {
+        final Map<String, List<CacheEntryResponse>> allCacheContent = cacheDiatnosticsService.getAllCacheContent();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(allCacheContent);
     }
 
     @GetMapping("/stats")
-    public Map<String, Long> getCacheSizes() {
-        Map<String, Long> sizes = new HashMap<>();
-        for (String cacheName : cacheManager.getCacheNames()) {
-            Cache cache = cacheManager.getCache(cacheName);
-            if (cache instanceof CaffeineCache caffeineCache) {
-                sizes.put(cacheName, caffeineCache.getNativeCache().estimatedSize());
-            }
-        }
-        return sizes;
+    public ResponseEntity<Map<String, Long>> getCacheSizes() {
+        final Map<String, Long> cacheSizes = cacheDiatnosticsService.getCacheSizes();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cacheSizes);
     }
 }
