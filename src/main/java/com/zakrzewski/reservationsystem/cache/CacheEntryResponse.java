@@ -1,4 +1,4 @@
-package com.zakrzewski.reservationsystem.dto.response;
+package com.zakrzewski.reservationsystem.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

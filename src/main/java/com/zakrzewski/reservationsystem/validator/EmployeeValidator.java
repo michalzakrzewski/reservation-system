@@ -17,27 +17,27 @@ public class EmployeeValidator {
     public void validateEmployeeCreateAccountRequest(final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
         LOG.info("Validate employee create account request");
 
-        if (StringUtils.isBlank(employeeCreateAccountRequest.getEmail())) {
+        if (StringUtils.isBlank(employeeCreateAccountRequest.email())) {
             LOG.error("Employee email is blank");
             throw new InvalidInputException("Employee email is blank");
         }
 
-        if (StringUtils.isBlank(employeeCreateAccountRequest.getPassword())) {
+        if (StringUtils.isBlank(employeeCreateAccountRequest.password())) {
             LOG.error("Employee password is blank");
             throw new InvalidInputException("Employee password is blank");
         }
 
-        if (StringUtils.isBlank(employeeCreateAccountRequest.getFirstName())) {
+        if (StringUtils.isBlank(employeeCreateAccountRequest.firstName())) {
             LOG.error("Employee first name is blank");
             throw new InvalidInputException("Employee first name is blank");
         }
 
-        if (StringUtils.isBlank(employeeCreateAccountRequest.getLastName())) {
+        if (StringUtils.isBlank(employeeCreateAccountRequest.lastName())) {
             LOG.error("Employee last name is blank");
             throw new InvalidInputException("Employee last name is blank");
         }
 
-        if (employeeCreateAccountRequest.getTeam() == null) {
+        if (employeeCreateAccountRequest.team() == null) {
             LOG.error("Employee team is null");
             throw new InvalidInputException("Employee team is null");
         }

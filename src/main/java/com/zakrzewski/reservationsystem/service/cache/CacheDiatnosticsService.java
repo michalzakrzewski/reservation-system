@@ -1,11 +1,10 @@
 package com.zakrzewski.reservationsystem.service.cache;
 
-import com.zakrzewski.reservationsystem.dto.response.CacheEntryResponse;
+import com.zakrzewski.reservationsystem.cache.CacheEntryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

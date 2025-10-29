@@ -57,7 +57,7 @@ public class EmployeeService {
     public EmployeeResponse createAccount(final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
         employeeValidator.validateEmployeeCreateAccountRequest(employeeCreateAccountRequest);
 
-        final String employeeEmail = employeeCreateAccountRequest.getEmail();
+        final String employeeEmail = employeeCreateAccountRequest.email();
         if (employeeRepository.existsByEmail(employeeEmail)) {
             LOG.warn("Employee email already exists");
             throw new ConflictException("Employee email already exists");
