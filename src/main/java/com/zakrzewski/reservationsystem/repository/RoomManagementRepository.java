@@ -1,12 +1,12 @@
 package com.zakrzewski.reservationsystem.repository;
 
-import com.zakrzewski.reservationsystem.model.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.RoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> {
-    Optional<EmployeeEntity> findByEmail(final String email);
+public interface RoomManagementRepository extends JpaRepository<RoomEntity, Long> {
+    Optional<RoomEntity> findByRoomName(final String roomName);
 }

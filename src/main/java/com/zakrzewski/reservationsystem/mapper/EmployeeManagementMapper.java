@@ -6,9 +6,9 @@ import com.zakrzewski.reservationsystem.model.EmployeeEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeMapper {
+public class EmployeeManagementMapper {
 
-    public EmployeeMapper() {
+    public EmployeeManagementMapper() {
     }
 
     public EmployeeResponse mapEmployeeEntityToEmployeeResponse(final EmployeeEntity employeeEntity) {
@@ -23,10 +23,10 @@ public class EmployeeMapper {
 
     public EmployeeEntity mapEmployeeCreateAccountRequestToEmployeeEntity(final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
         return EmployeeEntity.builder()
-                .withTeam(employeeCreateAccountRequest.getTeam())
-                .withEmail(employeeCreateAccountRequest.getEmail())
-                .withLastName(employeeCreateAccountRequest.getLastName())
-                .withFirstName(employeeCreateAccountRequest.getFirstName())
+                .withTeam(employeeCreateAccountRequest.team())
+                .withEmail(employeeCreateAccountRequest.email())
+                .withLastName(employeeCreateAccountRequest.lastName())
+                .withFirstName(employeeCreateAccountRequest.firstName())
                 .build();
     }
 }
