@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface RoomManagementRepository extends JpaRepository<RoomEntity, Long> {
     Optional<RoomEntity> findByRoomName(final String roomName);
-    boolean existsByRoomName(final String roomName);
 }

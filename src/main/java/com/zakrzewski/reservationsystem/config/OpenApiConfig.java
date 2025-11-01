@@ -16,7 +16,7 @@ public class OpenApiConfig {
     public OpenAPI apiConfig() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("reservation system")
+                        .title("Reservation system")
                         .contact(buildContactModel())
                         .version("1.0.0")
                         .description("REST Api Dokumentacja"));
@@ -26,6 +26,6 @@ public class OpenApiConfig {
         return new Contact()
                 .name("Michał Zakrzewski")
                 .email("michal.zakrzewsky@gmail.com")
-                .url("https://github.com/michalzakrzewski");
+                .url("https://github.com/michalzakrzewski/reservation-system");
     }
 }

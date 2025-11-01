@@ -14,6 +14,8 @@ public enum TeamEnum {
     ALPHA("alpha"),
     ADMIN("admin"),
     TESTER("tester"),
+    PRODUCT("product"),
+    HUMAN_RESOURCES("humanResources"),
     DIRECTOR("director");
 
     private static final Map<String, TeamEnum> TEAM_MAP = new HashMap<>();

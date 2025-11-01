@@ -1,7 +1,6 @@
 package com.zakrzewski.reservationsystem.service;
 
 import com.zakrzewski.reservationsystem.dto.request.RoomCreateRequest;
-import com.zakrzewski.reservationsystem.dto.response.EmployeeResponse;
 import com.zakrzewski.reservationsystem.dto.response.RoomResponse;
 import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;

@@ -2,6 +2,7 @@ package com.zakrzewski.reservationsystem.service;
 
 import com.zakrzewski.reservationsystem.dto.request.EmployeeCreateAccountRequest;
 import com.zakrzewski.reservationsystem.dto.response.EmployeeResponse;
+import com.zakrzewski.reservationsystem.enums.TeamEnum;
 import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
 import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
@@ -54,6 +55,12 @@ public class EmployeeService {
     @Transactional
     public EmployeeResponse createAccount(final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
         final String employeeEmail = employeeCreateAccountRequest.email();
+        final Optional<TeamEnum> teamEnum = TeamEnum.fromTeamName(employeeCreateAccountRequest.team().name());
+        if (teamEnum.isEmpty()) {
+            LOG.warn("Team: {} not found during employee creation", employeeCreateAccountRequest.team().name());
+            throw new InvalidInputException("Invalid team name");
+        }
+
         LOG.info("Creating employee account for email: {}", employeeEmail);
         try {
             final EmployeeEntity employeeEntity = employeeManagementMapper.mapEmployeeCreateAccountRequestToEmployeeEntity(employeeCreateAccountRequest);
