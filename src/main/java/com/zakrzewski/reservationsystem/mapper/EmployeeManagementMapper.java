@@ -6,9 +6,9 @@ import com.zakrzewski.reservationsystem.model.EmployeeEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeMapper {
+public class EmployeeManagementMapper {
 
-    public EmployeeMapper() {
+    public EmployeeManagementMapper() {
     }
 
     public EmployeeResponse mapEmployeeEntityToEmployeeResponse(final EmployeeEntity employeeEntity) {

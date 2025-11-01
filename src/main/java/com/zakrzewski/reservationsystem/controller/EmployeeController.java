@@ -3,7 +3,7 @@ package com.zakrzewski.reservationsystem.controller;
 import com.zakrzewski.reservationsystem.dto.request.EmployeeCreateAccountRequest;
 import com.zakrzewski.reservationsystem.dto.response.EmployeeResponse;
 import com.zakrzewski.reservationsystem.service.EmployeeService;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +28,7 @@ public class EmployeeController {
     }
 
     @PostMapping(path = "/create-account", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EmployeeResponse> createAccount(@NotNull @RequestBody final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
+    public ResponseEntity<EmployeeResponse> createAccount(@RequestBody @Valid final EmployeeCreateAccountRequest employeeCreateAccountRequest) {
         final EmployeeResponse employeeResponse = employeeService.createAccount(employeeCreateAccountRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
