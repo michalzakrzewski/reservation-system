@@ -1,6 +1,5 @@
-package com.zakrzewski.reservationsystem.service.cache;
+package com.zakrzewski.reservationsystem.cache;
 
-import com.zakrzewski.reservationsystem.cache.CacheEntryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

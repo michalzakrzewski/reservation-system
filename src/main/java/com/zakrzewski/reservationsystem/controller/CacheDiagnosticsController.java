@@ -1,7 +1,7 @@
 package com.zakrzewski.reservationsystem.controller;
 
 import com.zakrzewski.reservationsystem.cache.CacheEntryResponse;
-import com.zakrzewski.reservationsystem.service.cache.CacheDiatnosticsService;
+import com.zakrzewski.reservationsystem.cache.CacheDiatnosticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
