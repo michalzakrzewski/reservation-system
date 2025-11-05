@@ -2,7 +2,7 @@ package com.zakrzewski.reservationsystem.mapper;
 
 import com.zakrzewski.reservationsystem.dto.request.EmployeeCreateAccountRequest;
 import com.zakrzewski.reservationsystem.dto.response.EmployeeResponse;
-import com.zakrzewski.reservationsystem.model.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
 import org.springframework.stereotype.Component;
 
 @Component

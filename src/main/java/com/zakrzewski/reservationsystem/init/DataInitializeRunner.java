@@ -1,7 +1,7 @@
 package com.zakrzewski.reservationsystem.init;
 
 import com.zakrzewski.reservationsystem.enums.TeamEnum;
-import com.zakrzewski.reservationsystem.model.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
 import com.zakrzewski.reservationsystem.repository.EmployeeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

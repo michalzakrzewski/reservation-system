@@ -1,4 +1,4 @@
-package com.zakrzewski.reservationsystem.model;
+package com.zakrzewski.reservationsystem.model.entity;
 
 import com.zakrzewski.reservationsystem.enums.TeamEnum;
 import jakarta.persistence.*;
@@ -13,6 +13,7 @@ import lombok.*;
 public class EmployeeEntity {
 
     @Id
+    @Column(name = "employee_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
 

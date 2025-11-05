@@ -1,4 +1,4 @@
-package com.zakrzewski.reservationsystem.model;
+package com.zakrzewski.reservationsystem.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

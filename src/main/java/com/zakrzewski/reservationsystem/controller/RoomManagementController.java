@@ -28,7 +28,7 @@ public class RoomManagementController {
         this.roomManagementService = roomManagementService;
     }
 
-    @PostMapping(value = "/create-room", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/create-room", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RoomResponse> createRoom(@RequestBody @Valid final RoomCreateRequest roomCreateRequest) {
         final RoomResponse createdRoom = roomManagementService.createRoom(roomCreateRequest);
         return ResponseEntity

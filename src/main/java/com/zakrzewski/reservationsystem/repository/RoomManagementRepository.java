@@ -1,6 +1,6 @@
 package com.zakrzewski.reservationsystem.repository;
 
-import com.zakrzewski.reservationsystem.model.RoomEntity;
+import com.zakrzewski.reservationsystem.model.entity.RoomEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

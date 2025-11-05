@@ -7,7 +7,7 @@ import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
 import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
 import com.zakrzewski.reservationsystem.mapper.EmployeeManagementMapper;
-import com.zakrzewski.reservationsystem.model.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
 import com.zakrzewski.reservationsystem.repository.EmployeeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -94,6 +94,8 @@ public class EmployeeService {
             LOG.warn("Employee email is blank during get employee by email");
             throw new InvalidInputException("Employee email is blank");
         }
+
+        LOG.info("Getting employee by email: {}", employeeEmail);
         final Optional<EmployeeEntity> employee = employeeRepository.findByEmail(employeeEmail);
         return employee.map(employeeManagementMapper::mapEmployeeEntityToEmployeeResponse)
                 .orElseThrow(() -> {

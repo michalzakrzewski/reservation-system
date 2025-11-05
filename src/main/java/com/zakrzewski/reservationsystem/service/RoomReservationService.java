@@ -1,0 +1,108 @@
+package com.zakrzewski.reservationsystem.service;
+
+import com.zakrzewski.reservationsystem.dto.request.RoomReservationRequest;
+import com.zakrzewski.reservationsystem.dto.response.RoomReservationResponse;
+import com.zakrzewski.reservationsystem.exceptions.ConflictException;
+import com.zakrzewski.reservationsystem.exceptions.ForbiddenException;
+import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
+import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
+import com.zakrzewski.reservationsystem.mapper.RoomManagementMapper;
+import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.entity.RoomReservationEntity;
+import com.zakrzewski.reservationsystem.repository.EmployeeRepository;
+import com.zakrzewski.reservationsystem.repository.RoomReservationRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class RoomReservationService {
+    private static final Logger LOG = LoggerFactory.getLogger(RoomReservationService.class);
+
+    private final EmployeeRepository employeeRepository;
+    private final RoomManagementMapper roomManagementMapper;
+    private final RoomReservationRepository roomReservationRepository;
+
+    @SuppressWarnings("unused")
+    public RoomReservationService() {
+        this(null, null, null);
+    }
+
+    @Autowired
+    public RoomReservationService(final EmployeeRepository employeeRepository,
+                                  final RoomManagementMapper roomManagementMapper,
+                                  final RoomReservationRepository roomReservationRepository) {
+        this.employeeRepository = employeeRepository;
+        this.roomManagementMapper = roomManagementMapper;
+        this.roomReservationRepository = roomReservationRepository;
+    }
+
+
+    public boolean createReservation(final RoomReservationRequest roomReservationRequest) {
+        checkIfRoomIsAvailable(roomReservationRequest);
+
+        final List<EmployeeEntity> employeeList = employeeRepository.findAllById(roomReservationRequest.employeeList());
+
+        if (employeeList.size() != roomReservationRequest.employeeList().size()) {
+            LOG.warn("Some employees not found during reservation creation. Entity employeeList: {}, request employeeList: {}", employeeList, roomReservationRequest.employeeList());
+            throw new NotFoundException("Some employees not found");
+        }
+
+        final RoomReservationEntity roomReservationEntity = roomManagementMapper.mapRoomReservationRequestToRoomReservationEntity(employeeList, roomReservationRequest);
+        final RoomReservationEntity roomReservation = roomReservationRepository.save(roomReservationEntity);
+        LOG.info("Created reservation: {}", roomReservation);
+        return Boolean.TRUE;
+    }
+
+    public void checkIfRoomIsAvailable(final RoomReservationRequest roomReservationRequest) {
+        final Long roomId = roomReservationRequest.roomId();
+        final LocalDateTime startTime = roomReservationRequest.startTime();
+        final LocalDateTime endTime = roomReservationRequest.endTime();
+
+        if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
+            LOG.warn("The reservation start time cannot be after or equal to the end time. RoomId: {}, startTime: {}, endTime: {}", roomId, startTime, endTime);
+            throw new InvalidInputException("The reservation start time cannot be after or equal to the end time");
+        }
+
+        final List<RoomReservationEntity> overlappingReservations = roomReservationRepository.findByRoomIdAndStartTimeBeforeAndEndTimeAfter(roomId, endTime, startTime);
+        if (!overlappingReservations.isEmpty()) {
+            LOG.warn("There is overlapping reservation. RoomId: {}, startTime: {}, endTime: {}", roomId, startTime, endTime);
+            throw new ConflictException("There is overlapping reservation");
+        }
+    }
+
+    public Boolean updateReservation() {
+        return Boolean.TRUE;
+    }
+
+    public Boolean deleteReservation(final Long reservationId) {
+        final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(reservationId)
+                .orElseThrow(() -> {
+                    LOG.warn("Reservation not found during reservation deletion. ReservationId: {}", reservationId);
+                    return new NotFoundException("Reservation not found");
+                });
+        LOG.info("Deleting reservation: {}", roomReservationEntity);
+        roomReservationRepository.delete(roomReservationEntity);
+        return Boolean.TRUE;
+    }
+
+    public List<RoomReservationResponse> getAllReservation() {
+        return null;
+    }
+
+    public RoomReservationResponse getRoomReservationByReservationId(final Long reservationId) {
+        final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(reservationId)
+                .orElseThrow(() -> {
+                    LOG.warn("Reservation not found during reservation retrieval. ReservationId: {}", reservationId);
+                    return new NotFoundException("Reservation not found");
+                });
+
+        final RoomReservationResponse roomReservationResponse = roomManagementMapper.mapRoomReservationEntityToRoomReservationResponse(roomReservationEntity);
+        LOG.info("Found reservation: {}", roomReservationResponse);
+        return roomReservationResponse;
+    }
+}
