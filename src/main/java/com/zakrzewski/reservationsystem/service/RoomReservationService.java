@@ -14,6 +14,7 @@ import com.zakrzewski.reservationsystem.repository.RoomReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -90,14 +91,16 @@ public class RoomReservationService {
         return Boolean.TRUE;
     }
 
+    @Cacheable(value = "room-reservation", key = "'all'")
     public List<RoomReservationResponse> getAllReservation() {
         return null;
     }
 
-    public RoomReservationResponse getRoomReservationByReservationId(final Long reservationId) {
-        final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(reservationId)
+    @Cacheable(value = "room-reservation", key = "#roomReservationId")
+    public RoomReservationResponse getRoomReservationByReservationId(final Long roomReservationId) {
+        final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(roomReservationId)
                 .orElseThrow(() -> {
-                    LOG.warn("Reservation not found during reservation retrieval. ReservationId: {}", reservationId);
+                    LOG.warn("Reservation not found during reservation retrieval. ReservationId: {}", roomReservationId);
                     return new NotFoundException("Reservation not found");
                 });
 

@@ -45,9 +45,9 @@ public class RoomReservationController {
                 .body(roomReservationsList);
     }
 
-    @GetMapping(path = "/get-reservation/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RoomReservationResponse> getRoomReservationByReservationId(@PathVariable("reservationId") @NotNull final Long reservationId) {
-        final RoomReservationResponse roomReservationResponse = roomReservationService.getRoomReservationByReservationId(reservationId);
+    @GetMapping(path = "/get-reservation/{roomReservationId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RoomReservationResponse> getRoomReservationByReservationId(@PathVariable("roomReservationId") @NotNull final Long roomReservationId) {
+        final RoomReservationResponse roomReservationResponse = roomReservationService.getRoomReservationByReservationId(roomReservationId);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(roomReservationResponse);

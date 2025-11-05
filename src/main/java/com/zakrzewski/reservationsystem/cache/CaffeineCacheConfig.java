@@ -20,8 +20,9 @@ public class CaffeineCacheConfig {
         final CaffeineCache defaultCache = createCache("default", 5, 10000);
         final CaffeineCache roomCache = createCache("room", 10, 10);
         final CaffeineCache employeeCache = createCache("employee", 10, 1000);
+        final CaffeineCache roomReservationCache = createCache("room-reservation", 10, 10000);
 
-        cacheManager.setCaches(List.of(defaultCache, roomCache, employeeCache));
+        cacheManager.setCaches(List.of(defaultCache, roomCache, employeeCache, roomReservationCache));
         return cacheManager;
     }
 
