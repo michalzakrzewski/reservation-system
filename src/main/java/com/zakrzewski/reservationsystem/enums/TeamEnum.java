@@ -8,33 +8,28 @@ import java.util.Optional;
 
 @Getter
 public enum TeamEnum {
-    DATABASE("database"),
-    ACCOUNT_MANAGER("accountManager"),
-    OMEGA("omega"),
-    ALPHA("alpha"),
-    ADMIN("admin"),
-    TESTER("tester"),
-    PRODUCT("product"),
-    HUMAN_RESOURCES("humanResources"),
-    DIRECTOR("director");
+    DATABASE,
+    ACCOUNT_MANAGER,
+    OMEGA,
+    ALPHA,
+    ADMIN,
+    TESTER,
+    PRODUCT,
+    HUMAN_RESOURCES,
+    DIRECTOR;
 
     private static final Map<String, TeamEnum> TEAM_MAP = new HashMap<>();
+
     static {
         for (TeamEnum team : values()) {
-            TEAM_MAP.put(team.teamName.toLowerCase(), team);
+            TEAM_MAP.put(team.name(), team);
         }
     }
 
-    private final String teamName;
-
-    TeamEnum(final String teamName) {
-        this.teamName = teamName;
+    TeamEnum() {
     }
 
-    public static Optional<TeamEnum> fromTeamName(final String teamName) {
-        if (teamName == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(TEAM_MAP.get(teamName.toLowerCase()));
+    public static Optional<TeamEnum> fromTeamName(String teamName) {
+        return Optional.ofNullable(TEAM_MAP.get(teamName));
     }
 }
