@@ -41,7 +41,7 @@ public class RoomManagementController {
         final List<RoomResponse> allRooms = roomManagementService.getAllRooms();
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
+                .body(allRooms);
     }
 
     @GetMapping(path = "/find-by-room-name/{roomName}", produces = MediaType.APPLICATION_JSON_VALUE)

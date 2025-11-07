@@ -30,11 +30,11 @@ public class RoomReservationController {
 
 
     @PostMapping(path = "/create-reservation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> createReservation(@RequestBody @Valid final RoomReservationRequest roomReservationRequest) {
-        final Boolean isCreated = roomReservationService.createReservation(roomReservationRequest);
+    public ResponseEntity<RoomReservationResponse> createReservation(@RequestBody @Valid final RoomReservationRequest roomReservationRequest) {
+        final RoomReservationResponse roomReservationResponse = roomReservationService.createReservation(roomReservationRequest);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(isCreated);
+                .body(roomReservationResponse);
     }
 
     @GetMapping(path = "/all-reservation", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,5 +51,13 @@ public class RoomReservationController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(roomReservationResponse);
+    }
+
+    @GetMapping(path = "/get-reservation-list-by-room/{roomId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<RoomReservationResponse>> getReservationsListByRoomId(@PathVariable("roomId") @NotNull final Long roomId) {
+        final List<RoomReservationResponse> roomReservationResponseList = roomReservationService.getReservationsListByRoomId(roomId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(roomReservationResponseList);
     }
 }

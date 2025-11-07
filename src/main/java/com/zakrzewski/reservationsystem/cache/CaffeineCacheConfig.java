@@ -17,12 +17,22 @@ public class CaffeineCacheConfig {
     public CacheManager cacheManager() {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
 
+        // Podstawowe i ogólne cache'e
         final CaffeineCache defaultCache = createCache("default", 5, 10000);
         final CaffeineCache roomCache = createCache("room", 10, 10);
         final CaffeineCache employeeCache = createCache("employee", 10, 1000);
-        final CaffeineCache roomReservationCache = createCache("room-reservation", 10, 10000);
+        final CaffeineCache reservationByIdCache = createCache("reservation-by-id", 15, 20000);
+        final CaffeineCache reservationListAllCache = createCache("reservation-list-all", 5, 1);
+        final CaffeineCache reservationListByRoomCache = createCache("reservation-list-by-room", 5, 500);
+        cacheManager.setCaches(List.of(
+                defaultCache,
+                roomCache,
+                employeeCache,
+                reservationByIdCache,
+                reservationListAllCache,
+                reservationListByRoomCache
+        ));
 
-        cacheManager.setCaches(List.of(defaultCache, roomCache, employeeCache, roomReservationCache));
         return cacheManager;
     }
 

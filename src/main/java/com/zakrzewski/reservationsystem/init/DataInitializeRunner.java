@@ -28,6 +28,7 @@ public class DataInitializeRunner implements CommandLineRunner {
     @Override
     public void run(final String... args) throws Exception {
         LOG.info("Initializing data...");
+        /*
         final EmployeeEntity alphaDeveloper = EmployeeEntity.builder()
                 .withFirstName("Jan")
                 .withLastName("Kowalski")
@@ -71,6 +72,6 @@ public class DataInitializeRunner implements CommandLineRunner {
                 .withTeam(TeamEnum.ACCOUNT_MANAGER)
                 .build();
         employeeRepository.save(accountManager);
-        LOG.info("New accountManager has been saved successfully = {}", accountManager);
+        LOG.info("New accountManager has been saved successfully = {}", accountManager);*/
     }
 }

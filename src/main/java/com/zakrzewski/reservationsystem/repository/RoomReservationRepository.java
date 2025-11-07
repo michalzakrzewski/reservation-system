@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface RoomReservationRepository extends JpaRepository<RoomReservationEntity, Long> {
+    List<RoomReservationEntity> findByRoomId(Long roomId);
     List<RoomReservationEntity> findByRoomIdAndStartTimeBeforeAndEndTimeAfter(Long roomId, LocalDateTime endTime, LocalDateTime startTime);
 }

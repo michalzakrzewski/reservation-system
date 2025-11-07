@@ -3,13 +3,14 @@ package com.zakrzewski.reservationsystem.service;
 import com.zakrzewski.reservationsystem.dto.request.RoomReservationRequest;
 import com.zakrzewski.reservationsystem.dto.response.RoomReservationResponse;
 import com.zakrzewski.reservationsystem.exceptions.ConflictException;
-import com.zakrzewski.reservationsystem.exceptions.ForbiddenException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
 import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
 import com.zakrzewski.reservationsystem.mapper.RoomManagementMapper;
 import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
+import com.zakrzewski.reservationsystem.model.entity.RoomEntity;
 import com.zakrzewski.reservationsystem.model.entity.RoomReservationEntity;
 import com.zakrzewski.reservationsystem.repository.EmployeeRepository;
+import com.zakrzewski.reservationsystem.repository.RoomManagementRepository;
 import com.zakrzewski.reservationsystem.repository.RoomReservationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomReservationService {
@@ -29,32 +31,35 @@ public class RoomReservationService {
 
     private final EmployeeRepository employeeRepository;
     private final RoomManagementMapper roomManagementMapper;
+    private final RoomManagementRepository roomManagementRepository;
     private final RoomReservationRepository roomReservationRepository;
 
     @SuppressWarnings("unused")
     public RoomReservationService() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     @Autowired
     public RoomReservationService(final EmployeeRepository employeeRepository,
                                   final RoomManagementMapper roomManagementMapper,
+                                  final RoomManagementRepository roomManagementRepository,
                                   final RoomReservationRepository roomReservationRepository) {
         this.employeeRepository = employeeRepository;
         this.roomManagementMapper = roomManagementMapper;
+        this.roomManagementRepository = roomManagementRepository;
         this.roomReservationRepository = roomReservationRepository;
     }
 
     @Caching(
             put = {
-                    @CachePut(value = "room-reservation", key = "#result.reservationId")
+                    @CachePut(value = "reservation-by-id", key = "#result.roomReservationId")
             },
             evict = {
-                    @CacheEvict(value = "room-reservation", key = "'all'"),
-                    @CacheEvict(value = "room-reservation", key = "#result.roomId"),
+                    @CacheEvict(value = "reservation-list-all", allEntries = true),
+                    @CacheEvict(value = "reservation-list-by-room", key = "#result.roomId"),
             }
     )
-    public boolean createReservation(final RoomReservationRequest roomReservationRequest) {
+    public RoomReservationResponse createReservation(final RoomReservationRequest roomReservationRequest) {
         checkIfRoomIsAvailable(roomReservationRequest);
 
         final List<EmployeeEntity> employeeList = employeeRepository.findAllById(roomReservationRequest.employeeList());
@@ -67,13 +72,19 @@ public class RoomReservationService {
         final RoomReservationEntity roomReservationEntity = roomManagementMapper.mapRoomReservationRequestToRoomReservationEntity(employeeList, roomReservationRequest);
         final RoomReservationEntity roomReservation = roomReservationRepository.save(roomReservationEntity);
         LOG.info("Created reservation: {}", roomReservation);
-        return Boolean.TRUE;
+        return roomManagementMapper.mapRoomReservationEntityToRoomReservationResponse(roomReservation);
     }
 
     public void checkIfRoomIsAvailable(final RoomReservationRequest roomReservationRequest) {
         final Long roomId = roomReservationRequest.roomId();
         final LocalDateTime startTime = roomReservationRequest.startTime();
         final LocalDateTime endTime = roomReservationRequest.endTime();
+
+        final Optional<RoomEntity> retrievedRoom = roomManagementRepository.findById(roomId);
+        if (retrievedRoom.isEmpty()) {
+            LOG.warn("Room not found during reservation creation. RoomId: {}", roomId);
+            throw new NotFoundException("Room not found during create reservation");
+        }
 
         if (startTime.isAfter(endTime) || startTime.isEqual(endTime)) {
             LOG.warn("The reservation start time cannot be after or equal to the end time. RoomId: {}, startTime: {}, endTime: {}", roomId, startTime, endTime);
@@ -102,12 +113,21 @@ public class RoomReservationService {
         return Boolean.TRUE;
     }
 
-    @Cacheable(value = "room-reservation", key = "'all'")
+    @Cacheable(value = "reservation-list-all", key = "'all'")
     public List<RoomReservationResponse> getAllReservation() {
-        return null;
+        final List<RoomReservationEntity> roomReservationEntityList = roomReservationRepository.findAll();
+        if (roomReservationEntityList.isEmpty()) {
+            LOG.warn("No reservations found in database. Return empty list");
+            return List.of();
+        }
+
+        LOG.info("Found {} reservations in database", roomReservationEntityList.size());
+        return roomReservationEntityList.stream()
+                .map(roomManagementMapper::mapRoomReservationEntityToRoomReservationResponse)
+                .toList();
     }
 
-    @Cacheable(value = "room-reservation", key = "#roomReservationId")
+    @Cacheable(value = "reservation-by-id", key = "#roomReservationId")
     public RoomReservationResponse getRoomReservationByReservationId(final Long roomReservationId) {
         final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(roomReservationId)
                 .orElseThrow(() -> {
@@ -118,5 +138,20 @@ public class RoomReservationService {
         final RoomReservationResponse roomReservationResponse = roomManagementMapper.mapRoomReservationEntityToRoomReservationResponse(roomReservationEntity);
         LOG.info("Found reservation: {}", roomReservationResponse);
         return roomReservationResponse;
+    }
+
+    @Cacheable(value = "reservation-list-by-room", key = "#roomId")
+    public List<RoomReservationResponse> getReservationsListByRoomId(final Long roomId) {
+        final List<RoomReservationEntity> roomReservationEntityList =
+                roomReservationRepository.findByRoomId(roomId);
+
+        if (roomReservationEntityList.isEmpty()) {
+            LOG.warn("No reservations found for room: {}. Return empty list", roomId);
+            return List.of();
+        }
+
+        return roomReservationEntityList.stream()
+                .map(roomManagementMapper::mapRoomReservationEntityToRoomReservationResponse)
+                .toList();
     }
 }
