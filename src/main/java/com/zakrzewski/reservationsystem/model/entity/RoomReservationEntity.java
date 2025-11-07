@@ -39,6 +39,9 @@ public class RoomReservationEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "is_private")
+    private boolean isPrivate;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "reservation_employees",

@@ -1,6 +1,7 @@
 package com.zakrzewski.reservationsystem.service;
 
 import com.zakrzewski.reservationsystem.dto.request.RoomReservationRequest;
+import com.zakrzewski.reservationsystem.dto.request.RoomReservationUpdateRequest;
 import com.zakrzewski.reservationsystem.dto.response.RoomReservationResponse;
 import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
@@ -98,19 +99,92 @@ public class RoomReservationService {
         }
     }
 
-    public Boolean updateReservation() {
-        return Boolean.TRUE;
+    @Caching(
+            put = {
+                    @CachePut(value = "reservation-by-id", key = "#result.roomReservationId")
+            },
+            evict = {
+                    @CacheEvict(value = "reservation-list-all", allEntries = true),
+                    @CacheEvict(value = "reservation-list-by-room", key = "#oldRoomId"),
+                    @CacheEvict(value = "reservation-list-by-room", key = "#result.roomId"),
+            }
+    )
+    public RoomReservationResponse updateReservation(final Long reservationId,
+                                                     final RoomReservationUpdateRequest updateRequest) {
+        final RoomReservationEntity existingReservation = roomReservationRepository.findById(reservationId)
+                .orElseThrow(() -> {
+                    LOG.warn("Reservation not found for update. ReservationId: {}", reservationId);
+                    return new NotFoundException("Reservation not found for update");
+                });
+
+        final Long oldRoomId = existingReservation.getRoomId();
+        updateExistingReservationFields(updateRequest, oldRoomId, existingReservation);
+
+        final RoomReservationEntity updatedReservation = roomReservationRepository.save(existingReservation);
+        LOG.info("Updated reservation: {}", updatedReservation);
+
+        return roomManagementMapper.mapRoomReservationEntityToRoomReservationResponse(updatedReservation);
     }
 
-    public Boolean deleteReservation(final Long reservationId) {
+    private void updateExistingReservationFields(final RoomReservationUpdateRequest updateRequest, final Long oldRoomId, final RoomReservationEntity existingReservation) {
+        if (updateRequest.roomId() != null && !updateRequest.roomId().equals(oldRoomId)) {
+            final RoomEntity newRoom = roomManagementRepository.findById(updateRequest.roomId())
+                    .orElseThrow(() -> {
+                        LOG.warn("Room not found during reservation update. RoomId: {}", updateRequest.roomId());
+                        return new NotFoundException("Room not found during update reservation");
+                    });
+            existingReservation.setRoomId(newRoom.getRoomId());
+        }
+
+        if (updateRequest.reservationTitle() != null) {
+            existingReservation.setReservationTitle(updateRequest.reservationTitle());
+        }
+
+        if (updateRequest.startTime() != null) {
+            existingReservation.setStartTime(updateRequest.startTime());
+        }
+
+        if (updateRequest.endTime() != null) {
+            existingReservation.setEndTime(updateRequest.endTime());
+        }
+
+        if (updateRequest.isPrivate() != null) {
+            existingReservation.setPrivate(updateRequest.isPrivate());
+        }
+
+        if (updateRequest.description() != null) {
+            existingReservation.setDescription(updateRequest.description());
+        }
+
+        if (updateRequest.employeeList() != null) {
+            final List<EmployeeEntity> newEmployeeList = employeeRepository.findAllById(updateRequest.employeeList());
+
+            if (newEmployeeList.size() != updateRequest.employeeList().size()) {
+                LOG.warn("Some employees not found during reservation update.");
+                throw new NotFoundException("Some employees not found");
+            }
+            existingReservation.setEmplployeesList(newEmployeeList);
+        }
+    }
+
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "reservation-list-all", allEntries = true),
+                    @CacheEvict(value = "reservation-list-by-room", key = "#result"),
+                    @CacheEvict(value = "reservation-by-id", key = "#reservationId")
+            }
+    )
+    public Long deleteReservation(final Long reservationId) {
         final RoomReservationEntity roomReservationEntity = roomReservationRepository.findById(reservationId)
                 .orElseThrow(() -> {
                     LOG.warn("Reservation not found during reservation deletion. ReservationId: {}", reservationId);
-                    return new NotFoundException("Reservation not found");
+                    return new NotFoundException("Reservation not found during delete reservation");
                 });
+
+        final Long roomId = roomReservationEntity.getRoomId();
         LOG.info("Deleting reservation: {}", roomReservationEntity);
         roomReservationRepository.delete(roomReservationEntity);
-        return Boolean.TRUE;
+        return roomId;
     }
 
     @Cacheable(value = "reservation-list-all", key = "'all'")

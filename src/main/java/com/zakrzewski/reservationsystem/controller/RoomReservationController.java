@@ -1,6 +1,7 @@
 package com.zakrzewski.reservationsystem.controller;
 
 import com.zakrzewski.reservationsystem.dto.request.RoomReservationRequest;
+import com.zakrzewski.reservationsystem.dto.request.RoomReservationUpdateRequest;
 import com.zakrzewski.reservationsystem.dto.response.RoomReservationResponse;
 import com.zakrzewski.reservationsystem.service.RoomReservationService;
 import jakarta.validation.Valid;
@@ -59,5 +60,22 @@ public class RoomReservationController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(roomReservationResponseList);
+    }
+
+    @PatchMapping(path = "/update-reservation/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RoomReservationResponse> updateReservation(@PathVariable final Long reservationId,
+                                                                     @RequestBody @Valid final RoomReservationUpdateRequest updateRequest) {
+        final RoomReservationResponse roomReservationResponse = roomReservationService.updateReservation(reservationId, updateRequest);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(roomReservationResponse);
+    }
+
+    @DeleteMapping(path = "/delete-reservation/{roomReservationId}")
+    public ResponseEntity<Long> deleteReservation(@PathVariable("roomReservationId") @NotNull final Long roomReservationId) {
+        final Long roomId = roomReservationService.deleteReservation(roomReservationId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(roomId);
     }
 }
