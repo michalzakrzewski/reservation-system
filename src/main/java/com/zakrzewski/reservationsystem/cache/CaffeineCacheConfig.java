@@ -17,7 +17,6 @@ public class CaffeineCacheConfig {
     public CacheManager cacheManager() {
         final SimpleCacheManager cacheManager = new SimpleCacheManager();
 
-        // Podstawowe i ogólne cache'e
         final CaffeineCache defaultCache = createCache("default", 5, 10000);
         final CaffeineCache roomCache = createCache("room", 10, 10);
         final CaffeineCache employeeCache = createCache("employee", 10, 1000);
