@@ -38,9 +38,7 @@ public class CaffeineCacheConfig {
     private CaffeineCache createCache(final String name,
                                       final int ttl,
                                       final int maxSize) {
-        return new CaffeineCache(
-                name,
-                Caffeine.newBuilder()
+        return new CaffeineCache(name, Caffeine.newBuilder()
                         .expireAfterWrite(ttl, TimeUnit.MINUTES)
                         .maximumSize(maxSize)
                         .build()
