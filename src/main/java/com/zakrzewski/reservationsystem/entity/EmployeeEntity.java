@@ -1,4 +1,4 @@
-package com.zakrzewski.reservationsystem.model.entity;
+package com.zakrzewski.reservationsystem.entity;
 
 import com.zakrzewski.reservationsystem.enums.TeamEnum;
 import jakarta.persistence.*;

@@ -6,7 +6,7 @@ import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
 import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
 import com.zakrzewski.reservationsystem.mapper.RoomManagementMapper;
-import com.zakrzewski.reservationsystem.model.entity.RoomEntity;
+import com.zakrzewski.reservationsystem.entity.RoomEntity;
 import com.zakrzewski.reservationsystem.repository.RoomManagementRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

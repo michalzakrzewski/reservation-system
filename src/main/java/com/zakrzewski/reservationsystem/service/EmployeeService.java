@@ -7,7 +7,7 @@ import com.zakrzewski.reservationsystem.exceptions.ConflictException;
 import com.zakrzewski.reservationsystem.exceptions.InvalidInputException;
 import com.zakrzewski.reservationsystem.exceptions.NotFoundException;
 import com.zakrzewski.reservationsystem.mapper.EmployeeManagementMapper;
-import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
+import com.zakrzewski.reservationsystem.entity.EmployeeEntity;
 import com.zakrzewski.reservationsystem.repository.EmployeeRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

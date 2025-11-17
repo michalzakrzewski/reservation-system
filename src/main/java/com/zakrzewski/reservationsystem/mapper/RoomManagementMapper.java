@@ -4,9 +4,9 @@ import com.zakrzewski.reservationsystem.dto.request.RoomCreateRequest;
 import com.zakrzewski.reservationsystem.dto.request.RoomReservationRequest;
 import com.zakrzewski.reservationsystem.dto.response.RoomReservationResponse;
 import com.zakrzewski.reservationsystem.dto.response.RoomResponse;
-import com.zakrzewski.reservationsystem.model.entity.EmployeeEntity;
-import com.zakrzewski.reservationsystem.model.entity.RoomEntity;
-import com.zakrzewski.reservationsystem.model.entity.RoomReservationEntity;
+import com.zakrzewski.reservationsystem.entity.EmployeeEntity;
+import com.zakrzewski.reservationsystem.entity.RoomEntity;
+import com.zakrzewski.reservationsystem.entity.RoomReservationEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
