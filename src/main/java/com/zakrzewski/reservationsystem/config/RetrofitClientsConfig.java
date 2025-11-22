@@ -27,7 +27,7 @@ public class RetrofitClientsConfig {
         this.objectMapper = objectMapper;
     }
 
-    @Value("${service.user.base.url}")
+    @Value("${service.user.base.url:https://www.localhost.pl}")
     private String userServiceApiUrl;
 
     @Bean
